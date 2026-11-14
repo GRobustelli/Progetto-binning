@@ -7,19 +7,41 @@ def info_dataset(datapath):
     df.info()
 
 
-def load_dataset(datapath):
-    df = pd.read_csv(datapath)
+def load_dataset(filepath: str,
+                 #target_col: str,   per adesso non mi serve prepararli per un modello quindi la colonna target la ignoro per adesso
+                 sep: str = ",",
+                 has_header: bool = False,
+                 col_name: list = None,
+                 na_values=None,
+                ):
+    if na_values is None:
+        na_values = ["?", ",", ";", "nan", ""]
 
-    return df
+    header_arg = 0 if has_header else None
+    ds = pd.read_csv(filepath,
+                     sep=sep,
+                     header = header_arg,
+                     names = col_name if not has_header else None,
+                     na_values=na_values,
+                     skipinitialspace=True)
+
+    return ds
 
 def clean_dataset(dataset, tipo):
     if tipo == "student_depression":
         colonne_continue = ['Age', 'Academic Pressure', 'CGPA', 'Study Satisfaction', 'Work/Study Hours',
                             'Financial Stress']
-        df = dataset
-        X = df[colonne_continue]
+
+        X = dataset[colonne_continue]
         X_clean = X.dropna()
         return X_clean
+
+    elif tipo == "adult":
+        colonne_continue = ["age", "fnlwgt", "education-num", "capital-gain", "capital-loss", "hours-per-week"]
+        df = dataset[colonne_continue].copy()
+        df = df.dropna().reset_index(drop=True)
+
+        return df
 
     return None
 
@@ -43,3 +65,16 @@ def plot_binning_comparison(X_before, X_after, column, strategy_name="Quantile")
 
     plt.tight_layout()
     plt.show()
+
+def stampa_range_bin(est, nomi_colonne):
+    """
+    Stampa gli intervalli [min, max) di ciascun bin creato da KBinsDiscretizer.
+    """
+    for col, edges in zip(nomi_colonne, est.bin_edges_):
+        print(f"\n--- Colonna: {col} ({len(edges) - 1} bin effettivi) ---")
+        for i in range(len(edges) - 1):
+            inf = edges[i]
+            sup = edges[i + 1]
+            # L'ultimo bin include anche l'estremo superiore (parentesi quadra chiusa ])
+            chiusura = "]" if i == len(edges) - 2 else ")"
+            print(f"  Bin {i}: [{inf:.3f}, {sup:.3f}{chiusura}")
