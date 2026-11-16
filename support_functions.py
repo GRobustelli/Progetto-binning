@@ -32,15 +32,27 @@ def clean_dataset(dataset, tipo):
         colonne_continue = ['Age', 'Academic Pressure', 'CGPA', 'Study Satisfaction', 'Work/Study Hours',
                             'Financial Stress']
 
-        X = dataset[colonne_continue]
-        X_clean = X.dropna()
-        return X_clean
+        df = dataset[colonne_continue]
+        df = df.dropna().reset_index(drop=True)
+        return df
 
     elif tipo == "adult":
         colonne_continue = ["age", "fnlwgt", "education-num", "capital-gain", "capital-loss", "hours-per-week"]
         df = dataset[colonne_continue].copy()
         df = df.dropna().reset_index(drop=True)
+        return df
 
+    elif tipo == "irrigation":
+        df = dataset.select_dtypes(include="number")
+        df = df.dropna().reset_index(drop=True)
+        return df
+
+    elif tipo == "diabetes":
+        #Il binning mi risulta inutile la feature presenta solo valore 0 o 1, seleziono per adesso
+        #solo le colonne con valori interessanti
+        colonne_continue = ["BMI","MentHlth","PhysHlth","Age","Education", "Income"]
+        df = dataset[colonne_continue].copy()
+        df = df.dropna().reset_index(drop=True)
         return df
 
     return None
@@ -75,6 +87,6 @@ def stampa_range_bin(est, nomi_colonne):
         for i in range(len(edges) - 1):
             inf = edges[i]
             sup = edges[i + 1]
-            # L'ultimo bin include anche l'estremo superiore (parentesi quadra chiusa ])
             chiusura = "]" if i == len(edges) - 2 else ")"
             print(f"  Bin {i}: [{inf:.3f}, {sup:.3f}{chiusura}")
+
