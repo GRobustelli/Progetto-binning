@@ -1,6 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from narwhals import DataFrame
+
 
 def info_dataset(datapath):
     df = pd.read_csv(datapath)
@@ -28,34 +30,32 @@ def load_dataset(filepath: str,
     return ds
 
 def clean_dataset(dataset, tipo):
-    if tipo == "student_depression":
-        colonne_continue = ['Age', 'Academic Pressure', 'CGPA', 'Study Satisfaction', 'Work/Study Hours',
-                            'Financial Stress']
+    colonne_continue = []
+    df = DataFrame
 
-        df = dataset[colonne_continue]
-        df = df.dropna().reset_index(drop=True)
-        return df
+    if tipo != "irrigation":
+        if tipo == "student_depression":
+            colonne_continue = ['Age', 'Academic Pressure', 'CGPA', 'Study Satisfaction', 'Work/Study Hours',
+                                                            'Financial Stress']
 
-    elif tipo == "adult":
-        colonne_continue = ["age", "fnlwgt", "education-num", "capital-gain", "capital-loss", "hours-per-week"]
+        elif tipo == "adult":
+            colonne_continue = ["age", "fnlwgt", "education-num", "capital-gain", "capital-loss", "hours-per-week"]
+
+        # Il binning mi risulta inutile la feature presenta solo valore 0 o 1, seleziono per adesso
+        # solo le colonne con valori interessanti
+        elif tipo == "diabetes":
+            colonne_continue = ["BMI","MentHlth","PhysHlth","Age","Education", "Income"]
+
         df = dataset[colonne_continue].copy()
         df = df.dropna().reset_index(drop=True)
-        return df
 
     elif tipo == "irrigation":
         df = dataset.select_dtypes(include="number")
         df = df.dropna().reset_index(drop=True)
-        return df
 
-    elif tipo == "diabetes":
-        #Il binning mi risulta inutile la feature presenta solo valore 0 o 1, seleziono per adesso
-        #solo le colonne con valori interessanti
-        colonne_continue = ["BMI","MentHlth","PhysHlth","Age","Education", "Income"]
-        df = dataset[colonne_continue].copy()
-        df = df.dropna().reset_index(drop=True)
-        return df
 
-    return None
+    return df
+
 
 
 def plot_binning_comparison(X_before, X_after, column, strategy_name="Quantile"):
@@ -90,3 +90,40 @@ def stampa_range_bin(est, nomi_colonne):
             chiusura = "]" if i == len(edges) - 2 else ")"
             print(f"  Bin {i}: [{inf:.3f}, {sup:.3f}{chiusura}")
 
+"""
+A differenza di clean_dataset questo metodo ritorna anche la colonna della variabile target
+"""
+def opt_clean_dataset(dataset,
+                      tipo: str,
+                      target: str,
+                      drop_feature_na: bool = True):
+
+    colonne_continue = []
+
+    #In questo caso mi conviene pulire il dataset caso per caso dato che ho bisogno di trasformare la  colonna della variabile target
+    if tipo != "irrigation":
+        if tipo == "student_depression":
+            colonne_continue = ['Age', 'Academic Pressure', 'CGPA', 'Study Satisfaction', 'Work/Study Hours',
+                                'Financial Stress']
+
+            df = dataset[colonne_continue + [target]].copy()
+            df = df.dropna(subset=[target])
+
+        elif tipo == "adult":
+            colonne_continue = ["age", "fnlwgt", "education-num", "capital-gain", "capital-loss", "hours-per-week"]
+
+
+            # Il binning mi risulta inutile la feature presenta solo valore 0 o 1, seleziono per adesso
+            # solo le colonne con valori interessanti
+        elif tipo == "diabetes":
+            colonne_continue = ["BMI", "MentHlth", "PhysHlth", "Age", "Education", "Income"]
+
+
+
+    # optbinning funziona anche con variabili nulle all'interno delle variabili non target
+    # tuttavia dato che kbinsdiscretizer non le accetta aggiungo la possibilità di eliminare
+    # i valori nan anche in questo caso
+    if drop_feature_na:
+        df.dropna().reset_index(drop=True)
+
+    return df

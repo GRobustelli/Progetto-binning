@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import support_functions as sf
 import binning_kbinsdiscretizer as bk
-
+import binning_opt_binning as ob
 datapath_student_depression = "C:\\datasets\\student_depression_dataset.csv"
 student_depression = "student_depression"
 
@@ -80,7 +80,7 @@ irrigation_clean_km, irrigation_tf_km = bk.kbins_discretizer_strategy_kmeans(dat
                                                                              irrigation,
                                                                              has_header=True)
 
-# %% 5 diabete 3 classi non bilanciato
+#%% 5 diabete 3 classi non bilanciato
 
 sf.info_dataset(datapath_diabetes_health_indicator)
 
@@ -144,3 +144,16 @@ print(f"Database {diabetes_5050_non_balance} pre e post fit e transform strategi
 print(diabetes_3_clean_km[:10])
 print(diabetes_3_tf_km[:10])
 
+
+#%% 8 INIZIA QUI OPTBINNING - student depression
+
+sf.info_dataset(datapath_student_depression)
+target_col = "Depression"
+
+student_clean_ob, student_tf_ob = ob.opt_binning(datapath_student_depression,
+                                           student_depression,
+                                           has_header=True,
+                                           target=target_col)
+
+print(student_clean_ob[:10])
+print(student_tf_ob[:10])
