@@ -95,35 +95,58 @@ A differenza di clean_dataset questo metodo ritorna anche la colonna della varia
 """
 def opt_clean_dataset(dataset,
                       tipo: str,
-                      target: str,
+                      target: str = "",
                       drop_feature_na: bool = True):
 
     colonne_continue = []
-
+    df = None
     #In questo caso mi conviene pulire il dataset caso per caso dato che ho bisogno di trasformare la  colonna della variabile target
-    if tipo != "irrigation":
-        if tipo == "student_depression":
-            colonne_continue = ['Age', 'Academic Pressure', 'CGPA', 'Study Satisfaction', 'Work/Study Hours',
+
+    if tipo == "student_depression":
+        colonne_continue = ['Age', 'Academic Pressure', 'CGPA', 'Study Satisfaction', 'Work/Study Hours',
                                 'Financial Stress']
 
-            df = dataset[colonne_continue + [target]].copy()
-            df = df.dropna(subset=[target])
+        df = dataset[colonne_continue + [target]].copy()
+        df = df.dropna(subset=[target])
 
-        elif tipo == "adult":
-            colonne_continue = ["age", "fnlwgt", "education-num", "capital-gain", "capital-loss", "hours-per-week"]
+    elif tipo == "adult":
+        colonne_continue = ["age", "fnlwgt", "education-num", "capital-gain", "capital-loss", "hours-per-week"]
+        df = dataset[colonne_continue + [target]].copy()
+        df = df.dropna(subset=[target])
 
-
+        #Trasformo la variabile target con 0 e 1. 1 = >50k e 0 = <= 50k
+        mappa_adult = {
+            ">50K": 1,
+            "<=50K": 0,
+        }
+        df[target] = df[target].str.strip().map(mappa_adult)
             # Il binning mi risulta inutile la feature presenta solo valore 0 o 1, seleziono per adesso
             # solo le colonne con valori interessanti
-        elif tipo == "diabetes":
-            colonne_continue = ["BMI", "MentHlth", "PhysHlth", "Age", "Education", "Income"]
 
+    elif tipo == "diabetes":
+        colonne_continue = ["BMI", "MentHlth", "PhysHlth", "Age", "Education", "Income"]
+        df = dataset[colonne_continue + [target]].copy()
+        df = df.dropna(subset=[target])
+
+
+    elif tipo == "irrigation":
+
+        df = dataset.select_dtypes(include="number")
+        df[target] = dataset[target]
+        df = df.dropna(subset=[target])
+        mappa = {
+            "Low": 0,
+            "Medium": 1,
+            "High": 2
+        }
+        df[target] = df[target].str.strip().map(mappa)
 
 
     # optbinning funziona anche con variabili nulle all'interno delle variabili non target
     # tuttavia dato che kbinsdiscretizer non le accetta aggiungo la possibilità di eliminare
     # i valori nan anche in questo caso
-    if drop_feature_na:
+    if drop_feature_na and df is not None:
         df.dropna().reset_index(drop=True)
+
 
     return df

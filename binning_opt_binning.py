@@ -2,7 +2,7 @@
 import pandas as pd
 from optbinning import BinningProcess
 import support_functions as sf
-
+from optbinning import MulticlassOptimalBinning
 """
 Funzione che utilizzo per adesso per applicare optbinning sui miei dataset
 :param datapath: è il path dove si trova il dataset 
@@ -23,7 +23,9 @@ def opt_binning(datapath, dataset_name,
                 has_header: bool = False,
                 col_name: list = None,
                 na_values = None,
-                target: str = None):
+                target: str = None,
+                is_multiclass: bool = False):
+
     df = sf.load_dataset(datapath,
                          sep=sep,
                          has_header=has_header,
@@ -38,30 +40,46 @@ def opt_binning(datapath, dataset_name,
     else:
         raise ValueError("Colonna target mancante, va specificata")
 
-    X = df_clean.drop(columns=[target])
-    y = df_clean[target]
+    X = df_clean.drop(columns=[target]).copy()
+    y = df_clean[target].copy()
 
     variables = X.columns
 
     print(f"columns : {variables}")
+
     X_tf = pd.DataFrame(index=X.index)
 
     #Nel caso volessi passare anche il modello
     #binning_models = {}
-    for var in variables:
-        optb = OptimalBinning(name=var,
-                              dtype="numerical",
-                              solver="cp",
-                              max_n_bins=max_n_bins)
-        optb.fit(X[var],y)
 
-        print("optimalbinning status = ", optb.status)
+    if is_multiclass:
+        for var in variables:
+            optb = MulticlassOptimalBinning(name = var,
+                                            solver = "cp",
+                                            max_n_bins=max_n_bins)
+            optb.fit(X[var], y)
 
-        print(f"\n--- split per la colonna {var} --- \n"
-              f"Numero effettivo: {len(optb.splits)+1}\n"
-              f"Soglie: {optb.splits}\n")
-        X_tf[var] = optb.transform(X[var].values, metric="indices")
+            print("optimalbinning status = ", optb.status)
 
+            print(f"\n--- split per la colonna {var} --- \n"
+                  f"Numero effettivo: {len(optb.splits) + 1}\n"
+                  f"Soglie: {optb.splits}\n")
+            X_tf[var] = optb.transform(X[var].values, metric="indices")
+
+    else:
+        for var in variables:
+            optb = OptimalBinning(name=var,
+                                  dtype="numerical",
+                                  solver="cp",
+                                  max_n_bins=max_n_bins)
+            optb.fit(X[var], y)
+
+            print("optimalbinning status = ", optb.status)
+
+            print(f"\n--- split per la colonna {var} --- \n"
+                  f"Numero effettivo: {len(optb.splits) + 1}\n"
+                  f"Soglie: {optb.splits}\n")
+            X_tf[var] = optb.transform(X[var].values, metric="indices")
 
     return X, X_tf
 

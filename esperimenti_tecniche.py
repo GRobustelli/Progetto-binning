@@ -148,12 +148,84 @@ print(diabetes_3_tf_km[:10])
 #%% 8 INIZIA QUI OPTBINNING - student depression
 
 sf.info_dataset(datapath_student_depression)
-target_col = "Depression"
+target_col_student = "Depression"
 
 student_clean_ob, student_tf_ob = ob.opt_binning(datapath_student_depression,
                                            student_depression,
                                            has_header=True,
-                                           target=target_col)
+                                           target=target_col_student)
 
 print(student_clean_ob[:10])
 print(student_tf_ob[:10])
+
+#%% 9 adult
+
+sf.info_dataset(datapath_adult)
+target_col_adult = "Salary"
+
+adult_clean_ob, adult_tf_ob = ob.opt_binning(datapath_adult,
+                                               adult,
+                                               sep = ",",
+                                               has_header=False,
+                                               col_name=colonne_adult,
+                                               na_values='?',
+                                               target = target_col_adult,
+                                               is_multiclass = False
+                                               )
+adult_clean_ob.info()
+print(adult_clean_ob[:10])
+print(adult_tf_ob[:10])
+
+#%% 10 irrigation
+
+sf.info_dataset(datapath_irrigation)
+target_col_irrigation = "Irrigation_Need"
+
+irrigation_clean_ob, irrigation_tf_ob = ob.opt_binning(datapath_irrigation,
+                                                       irrigation,
+                                                       has_header=True,
+                                                       is_multiclass=True,
+                                                       target = target_col_irrigation)
+print(irrigation_clean_ob[:10])
+print(irrigation_tf_ob[:10])
+
+#%% 11 diabete 3 classi non bilanciato
+
+sf.info_dataset(datapath_diabetes_health_indicator)
+
+target_col_diabetes_3class = "Diabetes_012"
+
+diabetes_1_clean_ob, diabetes_1_tf_ob = ob.opt_binning(datapath_diabetes_health_indicator,
+                                                       diabete_generic,
+                                                       has_header=True,
+                                                       is_multiclass=True,
+                                                       target = target_col_diabetes_3class)
+print(diabetes_1_clean_ob[:10])
+print(diabetes_1_tf_ob[:10])
+
+#%% 12 diabete 2 classi bilanciato
+
+sf.info_dataset(datapath_diabetes_5050_bilanciato)
+target_col_diabetes_2class = "Diabetes_binary"
+
+diabetes_2_clean_ob, diabetes_2_tf_ob = ob.opt_binning(datapath_diabetes_5050_bilanciato,
+                                                       diabete_generic,
+                                                       has_header=True,
+                                                       is_multiclass=False,
+                                                       target = target_col_diabetes_2class)
+print(diabetes_2_clean_ob[:10])
+print(diabetes_2_tf_ob[:10])
+
+#%% 13 diabete 2 classi non bilanciato
+
+sf.info_dataset(datapath_diabetes_5050_non_bilanciato)
+target_col_diabetes_2class = "Diabetes_binary"
+
+diabetes_3_clean_ob, diabetes_3_tf_ob = ob.opt_binning(datapath_diabetes_5050_non_bilanciato,
+                                                       diabete_generic,
+                                                       has_header=True,
+                                                       is_multiclass=False,
+                                                       target = target_col_diabetes_2class)
+print(diabetes_3_clean_ob[:10])
+print(diabetes_3_tf_ob[:10])
+
