@@ -9,7 +9,8 @@ from dotenv import load_dotenv
 import support_functions as sf
 import binning_kbinsdiscretizer as bk
 import binning_opt_binning as ob
-
+import config as c
+"""
 load_dotenv()
 
 def get_path(env_var: str) -> Path:
@@ -17,13 +18,13 @@ def get_path(env_var: str) -> Path:
     if not val:
         raise EnvironmentError(f"Variabile '{env_var}' non trovata nel file .env!")
     return Path(val)
+"""
 
 
-
-datapath_student_depression = get_path("DEPRESSION_DATASET")
+datapath_student_depression = c.DEPRESSION_DATASET
 student_depression = "student_depression"
 
-datapath_adult = get_path("ADULT_DATASET")
+datapath_adult = c.ADULT_DATASET
 adult = "adult"
 colonne_adult = [
     "age", "workclass", "fnlwgt", "education", "education-num",
@@ -31,7 +32,7 @@ colonne_adult = [
     "capital-gain", "capital-loss", "hours-per-week", "native-country", "Salary"]
 
 
-datapath_irrigation = get_path("IRRIGATION_DATASET")
+datapath_irrigation = c.IRRIGATION_DATASET
 irrigation = "irrigation"
 
 """
@@ -41,7 +42,7 @@ irrigation = "irrigation"
     classe 3: diabete = 2
 """
 
-datapath_diabetes_health_indicator = get_path("DIABETE_3_CLASSI")
+datapath_diabetes_health_indicator = c.DIABETE_3_CLASSI
 diabetes_health = "diabetes_health"
 
 
@@ -50,7 +51,7 @@ diabetes_health = "diabetes_health"
     Classe 1: no diabete = 0
     Classe 2: pre-diabete, diabete = 1
 """
-datapath_diabetes_5050_bilanciato = get_path("DIABETE_2_CLASSI_NONBILANCIATO")
+datapath_diabetes_5050_bilanciato = c.DIABETE_2_CLASSI_BILANCIATO
 diabetes_5050_bilanciato = "diabetes_health_5050"
 
 """
@@ -58,7 +59,7 @@ diabetes_5050_bilanciato = "diabetes_health_5050"
     Classe 1: no diabetes = 0
     Classe 2: pre-diabete, diabete = 1
 """
-datapath_diabetes_5050_non_bilanciato = get_path("DIABETE_2_CLASSI_BILANCIATO")
+datapath_diabetes_5050_non_bilanciato = c.DIABETE_2_CLASSI_NONBILANCIATO
 diabetes_5050_non_balance = "diabetes_5050_non_balance"
 diabete_generic = "diabetes"
 

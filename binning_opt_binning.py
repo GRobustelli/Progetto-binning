@@ -3,6 +3,7 @@ import pandas as pd
 from optbinning import BinningProcess
 import support_functions as sf
 from optbinning import MulticlassOptimalBinning
+import config as c
 """
 Funzione che utilizzo per adesso per applicare optbinning sui miei dataset
 :param datapath: è il path dove si trova il dataset 
@@ -15,7 +16,7 @@ Funzione che utilizzo per adesso per applicare optbinning sui miei dataset
          df_ft:dataframe = dataset dopo essere stato binnanto (forse perché opt binning non accetta l'intero dataset)       
 """
 
-max_n_bins = 7
+max_n_bins = c.DEFAULT_N_BINS
 from optbinning import OptimalBinning
 
 def opt_binning(datapath, dataset_name,

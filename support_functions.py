@@ -98,8 +98,9 @@ def opt_clean_dataset(dataset,
                       target: str = "",
                       drop_feature_na: bool = True):
 
+    global df
     colonne_continue = []
-    df = None
+    #df = None
     #In questo caso mi conviene pulire il dataset caso per caso dato che ho bisogno di trasformare la  colonna della variabile target
 
     if tipo == "student_depression":
@@ -141,12 +142,11 @@ def opt_clean_dataset(dataset,
         }
         df[target] = df[target].str.strip().map(mappa)
 
-
     # optbinning funziona anche con variabili nulle all'interno delle variabili non target
     # tuttavia dato che kbinsdiscretizer non le accetta aggiungo la possibilità di eliminare
     # i valori nan anche in questo caso
     if drop_feature_na and df is not None:
-        df.dropna().reset_index(drop=True)
+        df = df.dropna().reset_index(drop=True)
 
 
     return df
