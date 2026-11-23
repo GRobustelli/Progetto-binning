@@ -1,21 +1,37 @@
 # %%  1 setup
+import os
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
+from dotenv import load_dotenv
+
 import support_functions as sf
 import binning_kbinsdiscretizer as bk
 import binning_opt_binning as ob
-datapath_student_depression = "C:\\datasets\\student_depression_dataset.csv"
+
+load_dotenv()
+
+def get_path(env_var: str) -> Path:
+    val = os.getenv(env_var)
+    if not val:
+        raise EnvironmentError(f"Variabile '{env_var}' non trovata nel file .env!")
+    return Path(val)
+
+
+
+datapath_student_depression = get_path("DEPRESSION_DATASET")
 student_depression = "student_depression"
 
-datapath_adult = "C:\\datasets\\adult.data"
+datapath_adult = get_path("ADULT_DATASET")
 adult = "adult"
 colonne_adult = [
     "age", "workclass", "fnlwgt", "education", "education-num",
     "marital-status", "occupation", "relationship", "race", "sex",
-    "capital-gain", "capital-loss", "hours-per-week", "native-country", "Salary"
-]
+    "capital-gain", "capital-loss", "hours-per-week", "native-country", "Salary"]
 
-datapath_irrigation = "C:\\datasets\\irrigation_prediction.csv"
+
+datapath_irrigation = get_path("IRRIGATION_DATASET")
 irrigation = "irrigation"
 
 """
@@ -24,7 +40,8 @@ irrigation = "irrigation"
     classe 2: pre-diabete = 1
     classe 3: diabete = 2
 """
-datapath_diabetes_health_indicator = "C:\\datasets\\diabete\\diabetes_012_health_indicators_BRFSS2015.csv"
+
+datapath_diabetes_health_indicator = get_path("DIABETE_3_CLASSI")
 diabetes_health = "diabetes_health"
 
 
@@ -33,7 +50,7 @@ diabetes_health = "diabetes_health"
     Classe 1: no diabete = 0
     Classe 2: pre-diabete, diabete = 1
 """
-datapath_diabetes_5050_bilanciato = "C:\\datasets\\diabete\\diabetes_binary_5050split_health_indicators_BRFSS2015.csv"
+datapath_diabetes_5050_bilanciato = get_path("DIABETE_2_CLASSI_NONBILANCIATO")
 diabetes_5050_bilanciato = "diabetes_health_5050"
 
 """
@@ -41,9 +58,10 @@ diabetes_5050_bilanciato = "diabetes_health_5050"
     Classe 1: no diabetes = 0
     Classe 2: pre-diabete, diabete = 1
 """
-datapath_diabetes_5050_non_bilanciato = "C:\\datasets\\diabete\\diabetes_binary_health_indicators_BRFSS2015.csv"
+datapath_diabetes_5050_non_bilanciato = get_path("DIABETE_2_CLASSI_BILANCIATO")
 diabetes_5050_non_balance = "diabetes_5050_non_balance"
 diabete_generic = "diabetes"
+
 
 # %% 2 Student
 
