@@ -37,8 +37,8 @@ DATASETS_CONFIG = {
         "name": "adult",
         "path": ADULT_DATASET,
         "target": "Salary",
-        "tipo": "adult"
-
+        "tipo": "adult",
+        "colonne": ["age", "workclass", "fnlwgt", "education", "education-num", "marital-status", "occupation", "relationship", "race", "sex", "capital-gain", "capital-loss", "hours-per-week", "native-country", "Salary"]
     },
     "irrigation": {
         "name": "irrigation",

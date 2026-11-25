@@ -24,7 +24,7 @@ def confronto_metodi_tabella(X: pd.DataFrame, y: pd.Series, n_bins: int = 7)->pd
 
         #3 optimalbinning supervisionato
         if is_multiclass:
-            optb = MulticlassOptimalBinning(name=col,max_n_bins=n_bins,dtype="numerical")
+            optb = MulticlassOptimalBinning(name=col,max_n_bins=n_bins)
         else:
             optb = OptimalBinning(name=col,dtype="numerical", max_n_bins=n_bins)
 
